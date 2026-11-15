@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Convert PDF to any format with 90-95% accuracy using PaddleOCR. Supports Hindi, handwritten text, and 8 output formats: DOCX, XLSX, PPTX, TXT, CSV, JSON, HTML, Searchable PDF."/>
+  <title>PDF to Any — PaddleOCR Powered Converter</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="bg-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo"><i class="fa-solid fa-file-pdf"></i> PDF<span>Any</span></div>
+    <div class="nav-links">
+      <a href="#converter">Convert</a>
+      <a href="#accuracy">Accuracy</a>
+      <a href="#features">Features</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge"><i class="fa-solid fa-bolt"></i> Powered by PaddleOCR</div>
+    <h1>Convert PDF to <span class="typewriter" id="typewriter">Any Format</span></h1>
+    <p class="hero-sub">Hindi · Handwritten · Printed — 90–95% Accuracy with AI Segmentation + Rules Engine</p>
+    <div class="accuracy-pills">
+      <div class="pill pill-red"><i class="fa-solid fa-xmark"></i> Tesseract <strong>60–70%</strong></div>
+      <div class="pill pill-yellow"><i class="fa-solid fa-minus"></i> PaddleOCR Raw <strong>80–88%</strong></div>
+      <div class="pill pill-green"><i class="fa-solid fa-check"></i> PaddleOCR + Seg + Rules <strong>90–95%</strong></div>
+    </div>
+  </section>
+
+  <!-- Converter Section -->
+  <section class="converter-section" id="converter">
+    <div class="converter-card">
+      <div class="card-header">
+        <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Convert Your PDF</h2>
+        <p>Upload a PDF — get back any format with high-accuracy OCR</p>
+      </div>
+
+      <!-- Upload Zone -->
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+        <p class="upload-title">Drag & Drop your PDF here</p>
+        <p class="upload-sub">or click to browse</p>
+        <input type="file" id="fileInput" accept=".pdf" hidden/>
+        <div class="file-info" id="fileInfo" style="display:none">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span id="fileName"></span>
+          <span id="fileSize"></span>
+        </div>
+      </div>
+
+      <!-- Options Row -->
+      <div class="options-row">
+        <div class="option-group">
+          <label><i class="fa-solid fa-language"></i> Language</label>
+          <select id="langSelect">
+            <option value="en">English</option>
+            <option value="hi">Hindi (हिंदी)</option>
+            <option value="en+hi">English + Hindi</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <label><i class="fa-solid fa-file-export"></i> Output Format</label>
+          <select id="formatSelect">
+            <option value="docx">Word (.docx)</option>
+            <option value="txt">Text (.txt)</option>
+            <option value="xlsx">Excel (.xlsx)</option>
+            <option value="pptx">PowerPoint (.pptx)</option>
+            <option value="pdf_searchable">Searchable PDF</option>
+            <option value="json">JSON</option>
+            <option value="html">HTML</option>
+            <option value="csv">CSV</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <label><i class="fa-solid fa-pen-nib"></i> Document Type</label>
+          <select id="docType">
+            <option value="printed">Printed</option>
+            <option value="handwritten">Handwritten</option>
+            <option value="mixed">Mixed</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Advanced Toggle -->
+      <div class="advanced-toggle" id="advToggle">
+        <i class="fa-solid fa-sliders"></i> Advanced Options
+        <i class="fa-solid fa-chevron-down" id="advChevron"></i>
+      </div>
+      <div class="advanced-panel" id="advPanel">
+        <label class="checkbox-row">
+          <input type="checkbox" id="segmentation" checked/>
+          <span><i class="fa-solid fa-object-group"></i> Enable Layout Segmentation</span>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="rulesEngine" checked/>
+          <span><i class="fa-solid fa-gears"></i> Enable Rules Engine (Post-processing)</span>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="tableDetect" checked/>
+          <span><i class="fa-solid fa-table"></i> Table Detection</span>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="denoising" checked/>
+          <span><i class="fa-solid fa-wand-sparkles"></i> Image Denoising & Enhancement</span>
+        </label>
+      </div>
+
+      <!-- Convert Button -->
+      <button class="convert-btn" id="convertBtn" disabled>
+        <i class="fa-solid fa-rocket"></i> Convert Now
+      </button>
+
+      <!-- Progress -->
+      <div class="progress-section" id="progressSection" style="display:none">
+        <div class="progress-steps">
+          <div class="step" id="step1"><div class="step-dot"></div><span>Uploading</span></div>
+          <div class="step-line"></div>
+          <div class="step" id="step2"><div class="step-dot"></div><span>OCR Processing</span></div>
+          <div class="step-line"></div>
+          <div class="step" id="step3"><div class="step-dot"></div><span>Segmentation</span></div>
+          <div class="step-line"></div>
+          <div class="step" id="step4"><div class="step-dot"></div><span>Rules Engine</span></div>
+          <div class="step-line"></div>
+          <div class="step" id="step5"><div class="step-dot"></div><span>Generating File</span></div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p class="progress-label" id="progressLabel">Initializing...</p>
+      </div>
+
+      <!-- Result -->
+      <div class="result-section" id="resultSection" style="display:none">
+        <div class="result-card">
+          <div class="result-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="result-info">
+            <h3 id="resultTitle">Conversion Complete!</h3>
+            <p id="resultMeta"></p>
+            <div class="accuracy-badge" id="accuracyBadge"></div>
+          </div>
+          <a class="download-btn" id="downloadBtn" href="#" download>
+            <i class="fa-solid fa-download"></i> Download
+          </a>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-section" id="errorSection" style="display:none">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span id="errorMsg"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accuracy Section -->
+  <section class="accuracy-section" id="accuracy">
+    <h2>Why PaddleOCR + Our Pipeline?</h2>
+    <div class="accuracy-grid">
+      <div class="acc-card acc-bad">
+        <div class="acc-icon"><i class="fa-solid fa-robot"></i></div>
+        <h3>Tesseract OCR</h3>
+        <div class="acc-bar-wrap"><div class="acc-bar" style="width:65%"></div></div>
+        <div class="acc-percent">60–70%</div>
+        <ul>
+          <li>Poor Hindi support</li>
+          <li>Fails on handwriting</li>
+          <li>No layout understanding</li>
+        </ul>
+      </div>
+      <div class="acc-card acc-mid">
+        <div class="acc-icon"><i class="fa-solid fa-microchip"></i></div>
+        <h3>PaddleOCR Raw</h3>
+        <div class="acc-bar-wrap"><div class="acc-bar" style="width:84%"></div></div>
+        <div class="acc-percent">80–88%</div>
+        <ul>
+          <li>Good Hindi support</li>
+          <li>Basic handwriting</li>
+          <li>No post-processing</li>
+        </ul>
+      </div>
+      <div class="acc-card acc-best">
+        <div class="acc-icon"><i class="fa-solid fa-star"></i></div>
+        <h3>PaddleOCR + Pipeline</h3>
+        <div class="acc-bar-wrap"><div class="acc-bar" style="width:92%"></div></div>
+        <div class="acc-percent">90–95%</div>
+        <ul>
+          <li>Layout Segmentation</li>
+          <li>Rules-based correction</li>
+          <li>Table & figure detection</li>
+          <li>Hindi + Handwritten ✓</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features-section" id="features">
+    <h2>What Makes Us Different</h2>
+    <div class="features-grid">
+      <div class="feat-card"><i class="fa-solid fa-language"></i><h4>Hindi + Handwritten</h4><p>Full Devanagari script support with handwriting recognition</p></div>
+      <div class="feat-card"><i class="fa-solid fa-object-group"></i><h4>Layout Segmentation</h4><p>Detects columns, tables, headers, footers intelligently</p></div>
+      <div class="feat-card"><i class="fa-solid fa-gears"></i><h4>Rules Engine</h4><p>Post-OCR correction using linguistic and domain rules</p></div>
+      <div class="feat-card"><i class="fa-solid fa-file-zipper"></i><h4>8 Output Formats</h4><p>DOCX, TXT, XLSX, PPTX, PDF, JSON, HTML, CSV</p></div>
+      <div class="feat-card"><i class="fa-solid fa-shield-halved"></i><h4>Private & Secure</h4><p>Files processed locally, deleted after download</p></div>
+      <div class="feat-card"><i class="fa-solid fa-bolt"></i><h4>Fast Processing</h4><p>GPU-accelerated PaddleOCR inference pipeline</p></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Built with <i class="fa-solid fa-heart"></i> using PaddleOCR · 90–95% Accuracy Pipeline</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

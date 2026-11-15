@@ -1,0 +1,13 @@
+flask
+flask-cors
+paddleocr
+paddlepaddle
+PyMuPDF
+opencv-python
+numpy
+Pillow
+python-docx
+openpyxl
+python-pptx
+reportlab
+werkzeug
